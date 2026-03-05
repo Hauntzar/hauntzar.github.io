@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robert Wen — Principal Cloud Software Architect</title>
+  <style>
+    :root {
+      --bg: #0a0a1a;
+      --starry: #1a1a3e;
+      --star: #fffef0;
+      --accent: #f4e4a6;
+      --accent-dim: #c9b87a;
+      --text: #e8e4dc;
+      --muted: #8b8a7a;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Starry background */
+    .sky {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, var(--bg) 0%, var(--starry) 50%, var(--bg) 100%);
+      z-index: -1;
+    }
+    .star {
+      position: absolute;
+      background: var(--star);
+      border-radius: 50%;
+      animation: twinkle 2.5s ease-in-out infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+    .shooting-star {
+      position: fixed;
+      width: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255,253,240,0.4), rgba(255,253,240,0.98));
+      border-radius: 2px;
+      transform: rotate(-45deg);
+      transform-origin: left center;
+      z-index: -1;
+      opacity: 0;
+    }
+    .shooting-star.s1 { left: 5%; top: 20%; animation: shoot1 5s ease-in infinite; }
+    .shooting-star.s2 { left: 15%; top: 5%; animation: shoot2 5s ease-in infinite; animation-delay: 7s; }
+    .shooting-star.s3 { left: 25%; top: 35%; animation: shoot3 5s ease-in infinite; animation-delay: 14s; }
+    @keyframes shoot1 {
+      0% { opacity: 0; transform: rotate(-45deg) translate(-80px, -80px); }
+      8% { opacity: 0.95; transform: rotate(-45deg) translate(0, 0); }
+      88% { opacity: 0.95; transform: rotate(-45deg) translate(380px, 380px); }
+      100% { opacity: 0; transform: rotate(-45deg) translate(420px, 420px); }
+    }
+    @keyframes shoot2 {
+      0% { opacity: 0; transform: rotate(-45deg) translate(-80px, -80px); }
+      8% { opacity: 0.95; transform: rotate(-45deg) translate(0, 0); }
+      88% { opacity: 0.95; transform: rotate(-45deg) translate(350px, 350px); }
+      100% { opacity: 0; transform: rotate(-45deg) translate(400px, 400px); }
+    }
+    @keyframes shoot3 {
+      0% { opacity: 0; transform: rotate(-45deg) translate(-80px, -80px); }
+      8% { opacity: 0.95; transform: rotate(-45deg) translate(0, 0); }
+      88% { opacity: 0.95; transform: rotate(-45deg) translate(320px, 320px); }
+      100% { opacity: 0; transform: rotate(-45deg) translate(360px, 360px); }
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 300;
+      color: var(--accent);
+      letter-spacing: 6px;
+      margin: 0 0 8px;
+    }
+    .tagline {
+      font-size: 1rem;
+      color: var(--accent-dim);
+      letter-spacing: 2px;
+      margin: 0 0 16px;
+    }
+    .summary {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px 24px;
+      margin-top: 24px;
+    }
+    .links a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+    .links a:hover {
+      color: var(--accent-dim);
+      text-decoration: underline;
+    }
+
+    section {
+      margin-top: 40px;
+    }
+    section h2 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(244,228,166,0.2);
+    }
+    .job, .edu, .project {
+      margin-bottom: 20px;
+    }
+    .job-header, .edu-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .job-title, .edu-title {
+      font-weight: 600;
+      color: var(--text);
+    }
+    .job-date, .edu-date {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .job-company, .edu-school {
+      font-size: 0.9rem;
+      color: var(--accent-dim);
+      margin-bottom: 6px;
+    }
+    .job-desc, .edu-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin: 0;
+    }
+    .project-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+    .project-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin: 4px 0 0;
+    }
+
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+    }
+    .skill-tag {
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: rgba(244,228,166,0.08);
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(244,228,166,0.15);
+    }
+
+    .tech-list {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(244,228,166,0.1);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="sky" id="sky"></div>
+  <div class="shooting-star s1"></div>
+  <div class="shooting-star s2"></div>
+  <div class="shooting-star s3"></div>
+
+  <main class="container">
+    <header>
+      <h1>Robert Wen</h1>
+      <p class="tagline">Principal Cloud Software Architect</p>
+      <p class="summary">Principal developer equipped with a track record of establishing technical strategy and creating enterprise-grade products from the ground up. Seeking opportunities to create new products, with a preference for AI-enabled companies.</p>
+      <div class="links">
+        <a href="mailto:rbwen13@gmail.com">rbwen13@gmail.com</a>
+        <a href="https://linkedin.com/in/robert-wen-50b28a63" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/hauntzar" target="_blank" rel="noopener">GitHub</a>
+        <span>Boise, ID</span>
+      </div>
+    </header>
+
+    <section>
+      <h2>Experience</h2>
+      <div class="job">
+        <div class="job-header">
+          <span class="job-title">Principal Cloud Software Architect / Fullstack Developer</span>
+          <span class="job-date">03/2023 – Present</span>
+        </div>
+        <div class="job-company">Nasuni</div>
+        <p class="job-desc">Designed and implemented a scalable cloud portal for all Nasuni products using React, FastAPI, Python, Redis, and Postgres on AWS. Led architectural proposals adopted as best practice across 200+ engineers. Architected add-ons including telemetry APIs and Web Access, contributing to 15% additional company revenue.</p>
+      </div>
+      <div class="job">
+        <div class="job-header">
+          <span class="job-title">Senior Cloud Software Architect / Backend Developer</span>
+          <span class="job-date">02/2022 – 02/2023</span>
+        </div>
+        <div class="job-company">Trovata Cash Management</div>
+        <p class="job-desc">Spearheaded ML forecasts, audit trails, and API entitlements; migrated Elasticsearch to Aurora Postgres (70% faster API response); designed Slack error alerting (95% faster incident response). Revenue grew 100% YoY.</p>
+      </div>
+      <div class="job">
+        <div class="job-header">
+          <span class="job-title">Software Architect / Test Developer</span>
+          <span class="job-date">05/2017 – 02/2022</span>
+        </div>
+        <div class="job-company">Micron Technology</div>
+        <p class="job-desc">Lead developer for test architecture across 4+ critical NAND devices. Created department-wide protocols for 60% faster qualification turnover. Selected for emergency support on critical deadlines; contributed to 3x memory density increase and 35% improved read/write speeds.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Education</h2>
+      <div class="edu">
+        <div class="edu-header">
+          <span class="edu-title">AI Engineer Production & Core Tracks</span>
+          <span class="edu-date">2026</span>
+        </div>
+        <div class="edu-school">Udemy — Deploy LLMs & Agents at Scale, RAG, QLoRA, Agents</div>
+      </div>
+      <div class="edu">
+        <div class="edu-header">
+          <span class="edu-title">AWS Certified Cloud Practitioner</span>
+          <span class="edu-date">2023</span>
+        </div>
+        <div class="edu-school">AWS Training and Certification</div>
+      </div>
+      <div class="edu">
+        <div class="edu-header">
+          <span class="edu-title">Dual B.S. Biochemistry & Electrical Engineering</span>
+          <span class="edu-date">2013 – 2017</span>
+        </div>
+        <div class="edu-school">Arizona State University</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Recognition</h2>
+      <p class="job-desc">UniAward (Nasuni) · Micron Culture Champion · Strong Hospital Volunteer of the Year</p>
+    </section>
+
+    <section>
+      <h2>Projects</h2>
+      <div class="project">
+        <div class="project-name">Across Time</div>
+        <p class="project-desc">Cofounder of iOS/Android time capsule messaging app.</p>
+      </div>
+      <div class="project">
+        <div class="project-name">Stock Program</div>
+        <p class="project-desc">ML-based stock trading system using Robinhood API.</p>
+      </div>
+      <div class="project">
+        <div class="project-name">Mars Nina</div>
+        <p class="project-desc">Fullstack ecommerce website for Mars Nina brand.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Skills</h2>
+      <div class="skills-grid">
+        <span class="skill-tag">Cloud-native Architecture</span>
+        <span class="skill-tag">LLM Engineering</span>
+        <span class="skill-tag">Microservices</span>
+        <span class="skill-tag">API Design</span>
+        <span class="skill-tag">Distributed Systems</span>
+        <span class="skill-tag">RAG & Agents</span>
+        <span class="skill-tag">Event-driven Architecture</span>
+        <span class="skill-tag">CI/CD</span>
+        <span class="skill-tag">Data Pipelines</span>
+        <span class="skill-tag">ML Ops</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Technologies</h2>
+      <p class="tech-list">Python · JavaScript · AWS (Aurora, S3, DynamoDB, SQS, ECS, EKS, Lambda, Bedrock, CDK) · React · Next.js · FastAPI · Django · Postgres · Redis · Kubernetes/Docker · LangChain · LiteLLM · Firebase · PyTorch</p>
+    </section>
+
+    <footer>
+      <a href="/across_time/privacy/">Across Time — Privacy Policy</a>
+    </footer>
+  </main>
+
+  <script>
+    (function() {
+      const sky = document.getElementById('sky');
+      const count = 80;
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('span');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = (1 + Math.random() * 2) + 'px';
+        star.style.height = star.style.width;
+        star.style.animationDelay = Math.random() * 2 + 's';
+        star.style.animationDuration = (2 + Math.random() * 2) + 's';
+        sky.appendChild(star);
+      }
+    })();
+  </script>
+</body>
+</html>
