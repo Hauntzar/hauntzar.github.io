@@ -47,33 +47,21 @@
       position: fixed;
       width: 80px;
       height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(255,253,240,0.4), rgba(255,253,240,0.98));
+      /* Gradient along diagonal: tail (transparent) at top-left, head (bright) at bottom-right */
+      background: linear-gradient(135deg, transparent, rgba(255,253,240,0.4), rgba(255,253,240,0.98));
       border-radius: 2px;
-      transform: rotate(-45deg);
       transform-origin: left center;
       z-index: -1;
       opacity: 0;
+      /* left/top set by JS for random placement across screen */
+      animation: shoot 5s ease-in infinite;
     }
-    .shooting-star.s1 { left: 5%; top: 20%; animation: shoot1 5s ease-in infinite; }
-    .shooting-star.s2 { left: 15%; top: 5%; animation: shoot2 5s ease-in infinite; animation-delay: 7s; }
-    .shooting-star.s3 { left: 25%; top: 35%; animation: shoot3 5s ease-in infinite; animation-delay: 14s; }
-    @keyframes shoot1 {
-      0% { opacity: 0; transform: rotate(-45deg) translate(-80px, -80px); }
-      8% { opacity: 0.95; transform: rotate(-45deg) translate(0, 0); }
-      88% { opacity: 0.95; transform: rotate(-45deg) translate(380px, 380px); }
-      100% { opacity: 0; transform: rotate(-45deg) translate(420px, 420px); }
-    }
-    @keyframes shoot2 {
-      0% { opacity: 0; transform: rotate(-45deg) translate(-80px, -80px); }
-      8% { opacity: 0.95; transform: rotate(-45deg) translate(0, 0); }
-      88% { opacity: 0.95; transform: rotate(-45deg) translate(350px, 350px); }
-      100% { opacity: 0; transform: rotate(-45deg) translate(400px, 400px); }
-    }
-    @keyframes shoot3 {
-      0% { opacity: 0; transform: rotate(-45deg) translate(-80px, -80px); }
-      8% { opacity: 0.95; transform: rotate(-45deg) translate(0, 0); }
-      88% { opacity: 0.95; transform: rotate(-45deg) translate(320px, 320px); }
-      100% { opacity: 0; transform: rotate(-45deg) translate(360px, 360px); }
+    /* Translate first (screen-space diagonal), then rotate to orient tail top-left, head bottom-right */
+    @keyframes shoot {
+      0% { opacity: 0; transform: translate(-80px, -80px) rotate(45deg); }
+      8% { opacity: 0.95; transform: translate(0, 0) rotate(45deg); }
+      88% { opacity: 0.95; transform: translate(380px, 380px) rotate(45deg); }
+      100% { opacity: 0; transform: translate(420px, 420px) rotate(45deg); }
     }
 
     .container {
@@ -114,7 +102,7 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 16px 24px;
-      margin-top: 24px;
+      margin: 12px 0 24px;
     }
     .links a {
       color: var(--accent);
@@ -198,6 +186,25 @@
       line-height: 1.8;
     }
 
+    .recognition-section h2 {
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+    .recognition-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .recognition-list li {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--accent);
+      background: rgba(244,228,166,0.12);
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 1px solid rgba(244,228,166,0.3);
+    }
+
     footer {
       margin-top: 48px;
       padding-top: 24px;
@@ -215,21 +222,19 @@
 </head>
 <body>
   <div class="sky" id="sky"></div>
-  <div class="shooting-star s1"></div>
-  <div class="shooting-star s2"></div>
-  <div class="shooting-star s3"></div>
+  <div id="shooting-stars"></div>
 
   <main class="container">
     <header>
       <h1>Robert Wen</h1>
-      <p class="tagline">Principal Cloud Software Architect</p>
-      <p class="summary">Principal developer equipped with a track record of establishing technical strategy and creating enterprise-grade products from the ground up. Seeking opportunities to create new products, with a preference for AI-enabled companies.</p>
       <div class="links">
         <a href="mailto:rbwen13@gmail.com">rbwen13@gmail.com</a>
         <a href="https://linkedin.com/in/robert-wen-50b28a63" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://github.com/hauntzar" target="_blank" rel="noopener">GitHub</a>
-        <span>Boise, ID</span>
+        <a href="tel:+14084312307">(408) 431-2307</a>
       </div>
+      <p class="tagline">Principal Cloud Software Architect</p>
+      <p class="summary">Principal developer equipped with a track record of establishing technical strategy and creating enterprise-grade products from the ground up. Seeking opportunities to create new products, with a preference for AI-enabled companies.</p>
     </header>
 
     <section>
@@ -248,7 +253,7 @@
           <span class="job-date">02/2022 – 02/2023</span>
         </div>
         <div class="job-company">Trovata Cash Management</div>
-        <p class="job-desc">Spearheaded ML forecasts, audit trails, and API entitlements; migrated Elasticsearch to Aurora Postgres (70% faster API response); designed Slack error alerting (95% faster incident response). Revenue grew 100% YoY.</p>
+        <p class="job-desc">Spearheaded new feature implementations, including but not limited to machine learning forecasts, audit trails, integration testing, api entitlements, and development servers, enabling company to productize new microservices and increase revenue 100% YoY. Migrated old Elasticsearch database into new object relational Aurora Postgres, resulting in over 70% faster api response time across web application. Designed new Slack api error alerting methodology, resulting in 95% faster response time to errors in production, 25% faster debug speed, and catching previously undiscovered bugs.</p>
       </div>
       <div class="job">
         <div class="job-header">
@@ -264,30 +269,60 @@
       <h2>Education</h2>
       <div class="edu">
         <div class="edu-header">
-          <span class="edu-title">AI Engineer Production & Core Tracks</span>
-          <span class="edu-date">2026</span>
+          <span class="edu-title">Dual B.S. Biochemistry and Electrical Engineering</span>
         </div>
-        <div class="edu-school">Udemy — Deploy LLMs & Agents at Scale, RAG, QLoRA, Agents</div>
+        <div class="edu-school">Arizona State University</div>
       </div>
       <div class="edu">
         <div class="edu-header">
           <span class="edu-title">AWS Certified Cloud Practitioner</span>
-          <span class="edu-date">2023</span>
         </div>
         <div class="edu-school">AWS Training and Certification</div>
       </div>
       <div class="edu">
         <div class="edu-header">
-          <span class="edu-title">Dual B.S. Biochemistry & Electrical Engineering</span>
-          <span class="edu-date">2013 – 2017</span>
+          <span class="edu-title">AI Engineer Production Track: Deploy LLMs & Agents at Scale</span>
+          <span class="edu-date">2026</span>
         </div>
-        <div class="edu-school">Arizona State University</div>
+        <div class="edu-school">Udemy</div>
+      </div>
+      <div class="edu">
+        <div class="edu-header">
+          <span class="edu-title">AI Engineer Core Track: LLM Engineering, RAG, QLoRA, Agents</span>
+          <span class="edu-date">2026</span>
+        </div>
+        <div class="edu-school">Udemy</div>
+      </div>
+      <div class="edu">
+        <div class="edu-header">
+          <span class="edu-title">Next.js and React - the Complete Guide</span>
+          <span class="edu-date">2021</span>
+        </div>
+        <div class="edu-school">Udemy</div>
+      </div>
+      <div class="edu">
+        <div class="edu-header">
+          <span class="edu-title">Python and Flask Bootcamp - Create Website Using Flask!</span>
+          <span class="edu-date">2021</span>
+        </div>
+        <div class="edu-school">Udemy</div>
+      </div>
+      <div class="edu">
+        <div class="edu-header">
+          <span class="edu-title">Python Django 2021 - Complete Course</span>
+          <span class="edu-date">2021</span>
+        </div>
+        <div class="edu-school">Udemy</div>
       </div>
     </section>
 
-    <section>
+    <section class="recognition-section">
       <h2>Recognition</h2>
-      <p class="job-desc">UniAward (Nasuni) · Micron Culture Champion · Strong Hospital Volunteer of the Year</p>
+      <ul class="recognition-list">
+        <li>UniAward (Nasuni)</li>
+        <li>Micron Culture Champion</li>
+        <li>Strong Hospital Volunteer of the Year</li>
+      </ul>
     </section>
 
     <section>
@@ -307,24 +342,77 @@
     </section>
 
     <section>
-      <h2>Skills</h2>
+      <h2>Skills & Technologies</h2>
       <div class="skills-grid">
         <span class="skill-tag">Cloud-native Architecture</span>
-        <span class="skill-tag">LLM Engineering</span>
-        <span class="skill-tag">Microservices</span>
+        <span class="skill-tag">Web Applications (Frontend/Backend)</span>
         <span class="skill-tag">API Design</span>
         <span class="skill-tag">Distributed Systems</span>
-        <span class="skill-tag">RAG & Agents</span>
-        <span class="skill-tag">Event-driven Architecture</span>
-        <span class="skill-tag">CI/CD</span>
+        <span class="skill-tag">LLM Engineering</span>
+        <span class="skill-tag">Long-term Platform Strategy</span>
+        <span class="skill-tag">Data and AI services</span>
+        <span class="skill-tag">Microservice Architecture</span>
         <span class="skill-tag">Data Pipelines</span>
+        <span class="skill-tag">Machine Learning</span>
         <span class="skill-tag">ML Ops</span>
+        <span class="skill-tag">Event-driven Architecture (SQS, Pub/Sub)</span>
+        <span class="skill-tag">Testing Strategy and Quality</span>
+        <span class="skill-tag">Technical Vision and Roadmap Ownership</span>
+        <span class="skill-tag">Agentic AI</span>
+        <span class="skill-tag">CI/CD Oriented Pipelines</span>
+        <span class="skill-tag">Performance Tuning</span>
+        <span class="skill-tag">Cross-team Architecture Alignment</span>
+        <span class="skill-tag">RAG</span>
+        <span class="skill-tag">Cost Optimization</span>
+        <span class="skill-tag">Data Collection and Analytics</span>
+        <span class="skill-tag">Streaming Architecture</span>
+        <span class="skill-tag">LLM Fine-Tuning and Evaluation</span>
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">Javascript</span>
+        <span class="skill-tag">AWS</span>
+        <span class="skill-tag">Aurora</span>
+        <span class="skill-tag">S3</span>
+        <span class="skill-tag">DynamoDb</span>
+        <span class="skill-tag">SQS</span>
+        <span class="skill-tag">SNS</span>
+        <span class="skill-tag">ECS</span>
+        <span class="skill-tag">EKS</span>
+        <span class="skill-tag">IoT</span>
+        <span class="skill-tag">Kinesis</span>
+        <span class="skill-tag">Lambda</span>
+        <span class="skill-tag">Cloudformation</span>
+        <span class="skill-tag">Bedrock</span>
+        <span class="skill-tag">CDK</span>
+        <span class="skill-tag">Containerization (Kubernetes/Docker)</span>
+        <span class="skill-tag">Next.js/Node</span>
+        <span class="skill-tag">React</span>
+        <span class="skill-tag">Postgres</span>
+        <span class="skill-tag">Redis</span>
+        <span class="skill-tag">MCP Servers</span>
+        <span class="skill-tag">Fast API</span>
+        <span class="skill-tag">Django</span>
+        <span class="skill-tag">UV</span>
+        <span class="skill-tag">OpenAPI</span>
+        <span class="skill-tag">LiteLLM</span>
+        <span class="skill-tag">LangChain</span>
+        <span class="skill-tag">Sockets/SSE/Streaming systems</span>
+        <span class="skill-tag">Vite</span>
+        <span class="skill-tag">Flask</span>
+        <span class="skill-tag">Bash/Linux</span>
+        <span class="skill-tag">Github</span>
+        <span class="skill-tag">Postman</span>
+        <span class="skill-tag">Sqlalchemy</span>
+        <span class="skill-tag">HTML/CSS</span>
+        <span class="skill-tag">Firebase</span>
+        <span class="skill-tag">SQL</span>
+        <span class="skill-tag">MongoDB</span>
+        <span class="skill-tag">Sentry</span>
+        <span class="skill-tag">Posthog</span>
+        <span class="skill-tag">C++</span>
+        <span class="skill-tag">LLMs (Frontier, Open Sourced)</span>
+        <span class="skill-tag">Pytorch</span>
+        <span class="skill-tag">Numpy/Pandas</span>
       </div>
-    </section>
-
-    <section>
-      <h2>Technologies</h2>
-      <p class="tech-list">Python · JavaScript · AWS (Aurora, S3, DynamoDB, SQS, ECS, EKS, Lambda, Bedrock, CDK) · React · Next.js · FastAPI · Django · Postgres · Redis · Kubernetes/Docker · LangChain · LiteLLM · Firebase · PyTorch</p>
     </section>
 
     <footer>
@@ -346,6 +434,17 @@
         star.style.animationDelay = Math.random() * 2 + 's';
         star.style.animationDuration = (2 + Math.random() * 2) + 's';
         sky.appendChild(star);
+      }
+
+      const shootingStars = document.getElementById('shooting-stars');
+      const numShooting = 5;
+      for (let i = 0; i < numShooting; i++) {
+        const el = document.createElement('div');
+        el.className = 'shooting-star';
+        el.style.left = Math.random() * 90 + '%';
+        el.style.top = Math.random() * 50 + '%';
+        el.style.animationDelay = (i * 3 + Math.random() * 4) + 's';
+        shootingStars.appendChild(el);
       }
     })();
   </script>
