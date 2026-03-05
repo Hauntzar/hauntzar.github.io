@@ -1,12 +1,33 @@
 """
 Robert Wen Resume Chatbot - Runs a local open-source model, no API keys needed.
 Deploy to Hugging Face Spaces: https://huggingface.co/spaces
+
+Custom colors: Set these in Space Settings → Variables (or env vars):
+  CHATBOT_BG, CHATBOT_BLOCK_BG, CHATBOT_HIGHLIGHT_BG, CHATBOT_HIGHLIGHT_BORDER,
+  CHATBOT_ACCENT, CHATBOT_ACCENT_DIM, CHATBOT_TEXT, CHATBOT_MUTED, CHATBOT_BUTTON_TEXT
 """
 
 import os
 import gradio as gr
 
 MODEL_ID = "Qwen/Qwen2.5-0.5B-Instruct"
+
+# Custom colors from env (Space Settings → Variables).
+# Defaults match index.html :root and .recognition-list / .skill-tag
+def _c(name: str, default: str) -> str:
+    return os.environ.get(name, default).strip() or default
+
+# Body + block background (same as example buttons/input area)
+BG = _c("CHATBOT_BG", "#1a1a3e")           # --starry
+BLOCK_BG = _c("CHATBOT_BLOCK_BG", "#1a1a3e")  # --starry
+# Input + example buttons (recognition highlight style)
+HIGHLIGHT_BG = _c("CHATBOT_HIGHLIGHT_BG", "rgba(244,228,166,0.12)")
+HIGHLIGHT_BORDER = _c("CHATBOT_HIGHLIGHT_BORDER", "rgba(244,228,166,0.3)")
+ACCENT = _c("CHATBOT_ACCENT", "#f4e4a6")       # --accent
+ACCENT_DIM = _c("CHATBOT_ACCENT_DIM", "#c9b87a")  # --accent-dim
+TEXT = _c("CHATBOT_TEXT", "#e8e4dc")         # --text
+MUTED = _c("CHATBOT_MUTED", "#8b8a7a")       # --muted
+BUTTON_TEXT = _c("CHATBOT_BUTTON_TEXT", "#0a0a1a")  # dark text on accent buttons
 
 # Load model at startup (runs on CPU, ~1GB RAM)
 pipe = None
@@ -109,16 +130,47 @@ with gr.Blocks(title="Robert Wen Resume Chatbot") as demo:
 
 if __name__ == "__main__":
     load_model()
+    theme = gr.themes.Soft(primary_hue="amber", secondary_hue="slate").set(
+        body_background_fill=BG,
+        body_background_fill_dark=BG,
+        block_background_fill=HIGHLIGHT_BG,
+        block_background_fill_dark=HIGHLIGHT_BG,
+        body_text_color=TEXT,
+        body_text_color_dark=TEXT,
+        body_text_color_subdued=MUTED,
+        body_text_color_subdued_dark=MUTED,
+        block_label_text_color=ACCENT,
+        block_label_text_color_dark=ACCENT,
+        input_background_fill=HIGHLIGHT_BG,
+        input_background_fill_dark=HIGHLIGHT_BG,
+        input_background_fill_focus=HIGHLIGHT_BG,
+        input_background_fill_focus_dark=HIGHLIGHT_BG,
+        input_background_fill_hover=HIGHLIGHT_BG,
+        input_background_fill_hover_dark=HIGHLIGHT_BG,
+        input_border_color=HIGHLIGHT_BORDER,
+        input_border_color_dark=HIGHLIGHT_BORDER,
+        input_placeholder_color_dark=MUTED,
+        button_secondary_background_fill=HIGHLIGHT_BG,
+        button_secondary_background_fill_dark=HIGHLIGHT_BG,
+        button_secondary_background_fill_hover=HIGHLIGHT_BG,
+        button_secondary_background_fill_hover_dark=HIGHLIGHT_BG,
+        button_secondary_border_color=HIGHLIGHT_BORDER,
+        button_secondary_border_color_dark=HIGHLIGHT_BORDER,
+        button_secondary_text_color=TEXT,
+        button_secondary_text_color_dark=TEXT,
+        button_primary_background_fill=ACCENT_DIM,
+        button_primary_background_fill_dark=ACCENT_DIM,
+        button_primary_background_fill_hover=ACCENT,
+        button_primary_background_fill_hover_dark=ACCENT,
+        button_primary_text_color=BUTTON_TEXT,
+        button_primary_text_color_dark=BUTTON_TEXT,
+    )
     demo.launch(
-        theme=gr.themes.Soft(
-            primary_hue="amber",
-            secondary_hue="slate",
-        ).set(
-            body_background_fill="#0a0a1a",
-            block_background_fill="#1a1a3e",
-        ),
+        theme=theme,
+        show_api=False,
         css="""
           .gradio-container { max-width: 520px !important; margin: 0 auto !important; padding: 12px !important; }
           .gradio-container, .dark .gradio-container { background: transparent !important; }
+          footer { display: none !important; }
         """,
     )
