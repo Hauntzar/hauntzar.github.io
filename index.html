@@ -155,6 +155,30 @@
       text-decoration: underline;
     }
 
+    .chatbot-embed {
+      margin-top: 32px;
+      width: 100%;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(244,228,166,0.2);
+    }
+    .chatbot-embed iframe {
+      display: block;
+      min-height: 500px;
+    }
+    .chatbot-note {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin: 8px 0 0;
+      text-align: center;
+    }
+    .chatbot-note a, .chatbot-note code {
+      color: var(--accent-dim);
+    }
+
     section {
       margin-top: 40px;
     }
@@ -275,6 +299,19 @@
       </div>
       <p class="tagline">Principal Cloud Software Architect</p>
       <p class="summary">Principal developer equipped with a track record of establishing technical strategy and creating enterprise-grade products from the ground up. Seeking opportunities to create new products, with a preference for AI-enabled companies.</p>
+
+      <div class="chatbot-embed">
+        <iframe
+          src="https://hauntzar-robert-wen-resume-chatbot.hf.space?embed=true"
+          frameborder="0"
+          width="100%"
+          height="500"
+          title="Robert Wen Resume Chatbot"
+          allow="accelerometer; ambient-light-sensor; autoplay; battery; camera; display-capture; geolocation; gyroscope; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+          sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-downloads"
+        ></iframe>
+        <p class="chatbot-note">If you see &quot;log in&quot;: set your Space to <strong>Public</strong> — <a href="https://huggingface.co/spaces/Hauntzar/robert-wen-resume-chatbot/settings" target="_blank" rel="noopener">Space Settings → Visibility</a></p>
+      </div>
     </header>
 
     <section>
