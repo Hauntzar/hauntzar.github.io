@@ -1,18 +1,37 @@
 """
-Robert Wen Resume Chatbot - Open source Gradio app
+Robert Wen Resume Chatbot - Runs a local open-source model, no API keys needed.
 Deploy to Hugging Face Spaces: https://huggingface.co/spaces
 """
 
+import os
 import gradio as gr
 
-# Try Hugging Face Inference API; fallback to keyword responses if unavailable
-try:
-    from huggingface_hub import InferenceClient
-    client = InferenceClient()
-    MODEL = "HuggingFaceH4/zephyr-7b-beta"
-    USE_LLM = True
-except Exception:
-    USE_LLM = False
+MODEL_ID = "Qwen/Qwen2.5-0.5B-Instruct"
+
+# Load model at startup (runs on CPU, ~1GB RAM)
+pipe = None
+
+def load_model():
+    global pipe
+    if pipe is not None:
+        return pipe
+    from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
+    model = AutoModelForCausalLM.from_pretrained(
+        MODEL_ID,
+        torch_dtype="auto",
+        device_map="auto",  # Uses CPU on free Spaces
+        low_cpu_mem_usage=True,
+    )
+    pipe = pipeline(
+        "text-generation",
+        model=model,
+        tokenizer=tokenizer,
+        max_new_tokens=512,
+        do_sample=True,
+        temperature=0.7,
+    )
+    return pipe
 
 SYSTEM_PROMPT = """You are an example chatbot on Robert Wen's resume, built to hype him up to prospective companies and recruiters.
 
@@ -53,59 +72,34 @@ Principal developer with a track record of establishing technical strategy and c
 
 
 def chat(message: str, history: list) -> str:
-    """Chat with the resume chatbot."""
+    """Chat with the resume chatbot using local model."""
     if not message or not message.strip():
         return ""
 
-    if USE_LLM:
-        try:
-            messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-            for h in history:
-                if isinstance(h, (list, tuple)) and len(h) >= 2:
-                    messages.append({"role": "user", "content": h[0]})
-                    messages.append({"role": "assistant", "content": h[1]})
-                elif isinstance(h, dict):
-                    messages.append({"role": h.get("role", "user"), "content": h.get("content", "")})
-            messages.append({"role": "user", "content": message})
-            response = client.chat.completions.create(
-                model=MODEL,
-                messages=messages,
-                max_tokens=512,
-                temperature=0.7,
-            )
-            return response.choices[0].message.content
-        except Exception as e:
-            return f"I'm having trouble reaching the AI right now. Try again in a moment! (Error: {str(e)[:80]})"
-    else:
-        # Fallback: simple keyword responses
-        msg = message.lower()
-        if "hire" in msg or "why" in msg:
-            return "Robert Wen is a Principal Cloud Software Architect with proven impact: UniAward at Nasuni, Micron Culture Champion, and Strong Hospital Volunteer of the Year. He's led architectural proposals adopted across 200+ engineers, contributed 15% additional revenue at Nasuni, and driven 100% YoY revenue growth at Trovata. His expertise in cloud architecture, microservices, and LLM engineering makes him an exceptional hire."
-        if "recognition" in msg or "award" in msg:
-            return "Robert has been recognized with: UniAward (Nasuni), Micron Culture Champion (Micron Technology), and Strong Hospital Volunteer of the Year (Strong Hospital)."
-        if "experience" in msg or "background" in msg:
-            return "Robert has held senior roles at Nasuni (Principal Architect), Trovata (Senior Architect), and Micron (Software Architect). He specializes in cloud-native architecture, microservices, and AI/LLM engineering."
-        return "Robert Wen is a Principal Cloud Software Architect with strong recognition at Nasuni, Micron, and Strong Hospital. Ask about his experience, skills, or why he'd be a great hire!"
+    try:
+        p = load_model()
+        messages = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": message},
+        ]
+        out = p(messages, max_new_tokens=512, do_sample=True, temperature=0.7)
+        gt = out[0].get("generated_text")
+        if isinstance(gt, list) and gt:
+            text = gt[-1].get("content", "")
+        elif isinstance(gt, str):
+            text = gt
+        else:
+            text = str(out)
+        return text.strip() if text else "I couldn't generate a response. Try again!"
+    except Exception as e:
+        return f"I'm having trouble. Try again! (Error: {str(e)[:80]})"
 
 
-with gr.Blocks(
-    title="Robert Wen Resume Chatbot",
-    theme=gr.themes.Soft(
-        primary_hue="amber",
-        secondary_hue="slate",
-    ).set(
-        body_background_fill="*neutral_50",
-        block_background_fill="*neutral_100",
-    ),
-    css="""
-    .gradio-container { max-width: 720px !important; margin: 0 auto !important; }
-    """,
-) as demo:
-    gr.Markdown("### Chat with Robert's Resume")
+with gr.Blocks(title="Robert Wen Resume Chatbot") as demo:
+    gr.Markdown("### Robert's Resume Chatbot")
     gr.ChatInterface(
         fn=chat,
-        type="messages",
-        placeholder="Ask me a question.. like why should I hire Robert Wen..",
+        textbox=gr.Textbox(placeholder="Ask me a question.. like 'Why should I hire Robert Wen?'.."),
         examples=[
             "Why should I hire Robert Wen?",
             "What recognition has Robert received?",
@@ -114,4 +108,17 @@ with gr.Blocks(
     )
 
 if __name__ == "__main__":
-    demo.launch()
+    load_model()
+    demo.launch(
+        theme=gr.themes.Soft(
+            primary_hue="amber",
+            secondary_hue="slate",
+        ).set(
+            body_background_fill="#0a0a1a",
+            block_background_fill="#1a1a3e",
+        ),
+        css="""
+          .gradio-container { max-width: 520px !important; margin: 0 auto !important; padding: 12px !important; }
+          .gradio-container, .dark .gradio-container { background: transparent !important; }
+        """,
+    )

@@ -156,18 +156,31 @@
     }
 
     .chatbot-embed {
-      margin-top: 32px;
+      margin-top: 28px;
       width: 100%;
-      max-width: 720px;
+      max-width: 520px;
       margin-left: auto;
       margin-right: auto;
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
-      border: 1px solid rgba(244,228,166,0.2);
+      border: 1px solid rgba(244,228,166,0.25);
+      background: rgba(26,26,62,0.6);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
     .chatbot-embed iframe {
       display: block;
-      min-height: 500px;
+      width: 100%;
+      height: 340px;
+      border: none;
+    }
+    .chatbot-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin: 28px 0 8px;
+      text-align: center;
     }
     .chatbot-note {
       font-size: 0.75rem;
@@ -300,18 +313,19 @@
       <p class="tagline">Principal Cloud Software Architect</p>
       <p class="summary">Principal developer equipped with a track record of establishing technical strategy and creating enterprise-grade products from the ground up. Seeking opportunities to create new products, with a preference for AI-enabled companies.</p>
 
+      <p class="chatbot-label">Custom Hosted Resume Chatbot</p>
       <div class="chatbot-embed">
         <iframe
           src="https://hauntzar-robert-wen-resume-chatbot.hf.space?embed=true"
           frameborder="0"
           width="100%"
-          height="500"
+          height="340"
           title="Robert Wen Resume Chatbot"
           allow="accelerometer; ambient-light-sensor; autoplay; battery; camera; display-capture; geolocation; gyroscope; microphone; midi; payment; usb; vr; xr-spatial-tracking"
           sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-downloads"
         ></iframe>
-        <p class="chatbot-note">If you see &quot;log in&quot;: set your Space to <strong>Public</strong> — <a href="https://huggingface.co/spaces/Hauntzar/robert-wen-resume-chatbot/settings" target="_blank" rel="noopener">Space Settings → Visibility</a></p>
       </div>
+      <p class="chatbot-note">Please give up to 90 seconds for a response due to free tier GPU constraints</p>
     </header>
 
     <section>
