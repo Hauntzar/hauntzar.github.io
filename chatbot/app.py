@@ -44,14 +44,7 @@ def load_model():
         device_map="auto",  # Uses CPU on free Spaces
         low_cpu_mem_usage=True,
     )
-    pipe = pipeline(
-        "text-generation",
-        model=model,
-        tokenizer=tokenizer,
-        max_new_tokens=512,
-        do_sample=True,
-        temperature=0.7,
-    )
+    pipe = pipeline("text-generation", model=model, tokenizer=tokenizer)
     return pipe
 
 SYSTEM_PROMPT = """You are an example chatbot on Robert Wen's resume, built to hype him up to prospective companies and recruiters.
@@ -167,7 +160,6 @@ if __name__ == "__main__":
     )
     demo.launch(
         theme=theme,
-        show_api=False,
         css="""
           .gradio-container { max-width: 520px !important; margin: 0 auto !important; padding: 12px !important; }
           .gradio-container, .dark .gradio-container { background: transparent !important; }
