@@ -3,7 +3,7 @@ Robert Wen Resume Chatbot - Runs a local open-source model, no API keys needed.
 Deploy to Hugging Face Spaces: https://huggingface.co/spaces
 
 Custom colors: Set these in Space Settings → Variables (or env vars):
-  CHATBOT_BG, CHATBOT_BLOCK_BG, CHATBOT_HIGHLIGHT_BG, CHATBOT_HIGHLIGHT_BORDER,
+  CHATBOT_BG, CHATBOT_HOVER_BG, CHATBOT_HOVER_BORDER, CHATBOT_INPUT_TEXT,
   CHATBOT_ACCENT, CHATBOT_ACCENT_DIM, CHATBOT_TEXT, CHATBOT_MUTED, CHATBOT_BUTTON_TEXT
 """
 
@@ -17,17 +17,21 @@ MODEL_ID = "Qwen/Qwen2.5-0.5B-Instruct"
 def _c(name: str, default: str) -> str:
     return os.environ.get(name, default).strip() or default
 
-# Body + block background (same as example buttons/input area)
-BG = _c("CHATBOT_BG", "#1a1a3e")           # --starry
-BLOCK_BG = _c("CHATBOT_BLOCK_BG", "#1a1a3e")  # --starry
-# Input + example buttons (recognition highlight style)
-HIGHLIGHT_BG = _c("CHATBOT_HIGHLIGHT_BG", "rgba(244,228,166,0.12)")
-HIGHLIGHT_BORDER = _c("CHATBOT_HIGHLIGHT_BORDER", "rgba(244,228,166,0.3)")
-ACCENT = _c("CHATBOT_ACCENT", "#f4e4a6")       # --accent
-ACCENT_DIM = _c("CHATBOT_ACCENT_DIM", "#c9b87a")  # --accent-dim
-TEXT = _c("CHATBOT_TEXT", "#e8e4dc")         # --text
-MUTED = _c("CHATBOT_MUTED", "#8b8a7a")       # --muted
-BUTTON_TEXT = _c("CHATBOT_BUTTON_TEXT", "#0a0a1a")  # dark text on accent buttons
+# Darker purple-blue for all backgrounds
+DARK_BG = _c("CHATBOT_BG", "#1a1b29")
+# Accent yellow for all hover states
+HOVER_BG = _c("CHATBOT_HOVER_BG", "#f4e4a6")  # yellow accent
+HOVER_BORDER = _c("CHATBOT_HOVER_BORDER", "rgba(244,228,166,0.5)")
+# Lighter purple-blue for example text
+INPUT_TEXT = _c("CHATBOT_INPUT_TEXT", "#a8acd4")
+# Dark dark blue for input field text and placeholder
+INPUT_DARK_BLUE = _c("CHATBOT_INPUT_DARK_BLUE", "#0a0a1a")
+# Other theme colors
+ACCENT = _c("CHATBOT_ACCENT", "#f4e4a6")
+ACCENT_DIM = _c("CHATBOT_ACCENT_DIM", "#c9b87a")
+TEXT = _c("CHATBOT_TEXT", "#e8e4dc")
+MUTED = _c("CHATBOT_MUTED", "#8b8a7a")
+BUTTON_TEXT = _c("CHATBOT_BUTTON_TEXT", "#0a0a1a")
 
 # Load model at startup (runs on CPU, ~1GB RAM)
 pipe = None
@@ -84,12 +88,16 @@ Cloud-native Architecture, Web Applications (Frontend/Backend), API Design, Dist
 ## Summary
 Principal developer with a track record of establishing technical strategy and creating enterprise-grade products. Seeking opportunities at AI-enabled companies."""
 
+LOADING_MSG = "Please allow up to 90 seconds for a response due to free tier GPU constraints."
 
-def chat(message: str, history: list) -> str:
+
+def chat(message: str, history: list):
     """Chat with the resume chatbot using local model."""
     if not message or not message.strip():
-        return ""
+        yield ""
+        return
 
+    yield LOADING_MSG
     try:
         p = load_model()
         messages = [
@@ -104,16 +112,16 @@ def chat(message: str, history: list) -> str:
             text = gt
         else:
             text = str(out)
-        return text.strip() if text else "I couldn't generate a response. Try again!"
+        yield text.strip() if text else "I couldn't generate a response. Try again!"
     except Exception as e:
-        return f"I'm having trouble. Try again! (Error: {str(e)[:80]})"
+        yield f"I'm having trouble. Try again! (Error: {str(e)[:80]})"
 
 
-with gr.Blocks(title="Robert Wen Resume Chatbot") as demo:
-    gr.Markdown("### Robert's Resume Chatbot")
+with gr.Blocks(title="Robert Wen Resume Chatbot", fill_height=True) as demo:
     gr.ChatInterface(
         fn=chat,
-        textbox=gr.Textbox(placeholder="Ask me a question.. like 'Why should I hire Robert Wen?'.."),
+        fill_height=True,
+        textbox=gr.Textbox(placeholder="Ask me a question.. like 'Why should I hire Robert Wen?'..", lines=2),
         examples=[
             "Why should I hire Robert Wen?",
             "What recognition has Robert received?",
@@ -124,45 +132,51 @@ with gr.Blocks(title="Robert Wen Resume Chatbot") as demo:
 if __name__ == "__main__":
     load_model()
     theme = gr.themes.Soft(primary_hue="amber", secondary_hue="slate").set(
-        body_background_fill=BG,
-        body_background_fill_dark=BG,
-        block_background_fill=BLOCK_BG,
-        block_background_fill_dark=BLOCK_BG,
+        body_background_fill=DARK_BG,
+        body_background_fill_dark=DARK_BG,
+        block_background_fill=DARK_BG,
+        block_background_fill_dark=DARK_BG,
         body_text_color=TEXT,
         body_text_color_dark=TEXT,
         body_text_color_subdued=MUTED,
         body_text_color_subdued_dark=MUTED,
         block_label_text_color=ACCENT,
         block_label_text_color_dark=ACCENT,
-        input_background_fill=BLOCK_BG,
-        input_background_fill_dark=BLOCK_BG,
-        input_background_fill_focus=HIGHLIGHT_BG,
-        input_background_fill_focus_dark=HIGHLIGHT_BG,
-        input_background_fill_hover=HIGHLIGHT_BG,
-        input_background_fill_hover_dark=HIGHLIGHT_BG,
-        input_border_color=HIGHLIGHT_BORDER,
-        input_border_color_dark=HIGHLIGHT_BORDER,
-        input_placeholder_color_dark=MUTED,
-        button_secondary_background_fill=BLOCK_BG,
-        button_secondary_background_fill_dark=BLOCK_BG,
-        button_secondary_background_fill_hover=HIGHLIGHT_BG,
-        button_secondary_background_fill_hover_dark=HIGHLIGHT_BG,
-        button_secondary_border_color=HIGHLIGHT_BORDER,
-        button_secondary_border_color_dark=HIGHLIGHT_BORDER,
+        input_background_fill=DARK_BG,
+        input_background_fill_dark=DARK_BG,
+        input_background_fill_focus=HOVER_BG,
+        input_background_fill_focus_dark=HOVER_BG,
+        input_background_fill_hover=HOVER_BG,
+        input_background_fill_hover_dark=HOVER_BG,
+        input_border_color=HOVER_BORDER,
+        input_border_color_dark=HOVER_BORDER,
+        input_placeholder_color_dark=INPUT_DARK_BLUE,
+        button_secondary_background_fill=DARK_BG,
+        button_secondary_background_fill_dark=DARK_BG,
+        button_secondary_background_fill_hover=HOVER_BG,
+        button_secondary_background_fill_hover_dark=HOVER_BG,
+        button_secondary_border_color=HOVER_BORDER,
+        button_secondary_border_color_dark=HOVER_BORDER,
         button_secondary_text_color=TEXT,
         button_secondary_text_color_dark=TEXT,
         button_primary_background_fill=ACCENT_DIM,
         button_primary_background_fill_dark=ACCENT_DIM,
-        button_primary_background_fill_hover=ACCENT,
-        button_primary_background_fill_hover_dark=ACCENT,
+        button_primary_background_fill_hover=HOVER_BG,
+        button_primary_background_fill_hover_dark=HOVER_BG,
         button_primary_text_color=BUTTON_TEXT,
         button_primary_text_color_dark=BUTTON_TEXT,
     )
     demo.launch(
         theme=theme,
-        css="""
-          .gradio-container { max-width: 520px !important; margin: 0 auto !important; padding: 12px !important; }
-          .gradio-container, .dark .gradio-container { background: transparent !important; }
-          footer { display: none !important; }
+        css=f"""
+          .gradio-container {{ width: 100% !important; height: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; font-size: 0.875rem !important; display: flex !important; flex-direction: column !important; min-height: 0 !important; }}
+          .gradio-container > div, .gradio-container > .contain {{ flex: 1 !important; min-height: 0 !important; display: flex !important; flex-direction: column !important; }}
+          .gradio-container [data-testid="chatbot"], .gradio-container .chatbot {{ flex: 1 !important; min-height: 0 !important; overflow: auto !important; }}
+          .gradio-container, .dark .gradio-container {{ background: transparent !important; }}
+          .gradio-container .message, .gradio-container .textbox, .gradio-container button {{ font-size: 0.875rem !important; }}
+          .gradio-container [data-testid="example-button"], .gradio-container .example-btn, .gradio-container [data-testid*="example"] {{ color: {INPUT_TEXT} !important; }}
+          .gradio-container textarea, .gradio-container input[type="text"] {{ color: {INPUT_DARK_BLUE} !important; }}
+          .gradio-container textarea::placeholder, .gradio-container input::placeholder {{ color: {INPUT_DARK_BLUE} !important; opacity: 0.9; }}
+          footer {{ display: none !important; }}
         """,
     )
