@@ -121,7 +121,8 @@ with gr.Blocks(title="Robert Wen Resume Chatbot", fill_height=True) as demo:
     gr.ChatInterface(
         fn=chat,
         fill_height=True,
-        textbox=gr.Textbox(placeholder="Ask me a question.. like 'Why should I hire Robert Wen?'..", lines=2),
+        chatbot=gr.Chatbot(show_label=False),
+        textbox=gr.Textbox(placeholder="Ask me a question.. like 'Why should I hire Robert Wen?'..", lines=1, max_lines=2),
         examples=[
             "Why should I hire Robert Wen?",
             "What recognition has Robert received?",
@@ -169,14 +170,14 @@ if __name__ == "__main__":
     demo.launch(
         theme=theme,
         css=f"""
-          .gradio-container {{ width: 100% !important; height: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; font-size: 0.875rem !important; display: flex !important; flex-direction: column !important; min-height: 0 !important; }}
-          .gradio-container > div, .gradio-container > .contain {{ flex: 1 !important; min-height: 0 !important; display: flex !important; flex-direction: column !important; }}
-          .gradio-container [data-testid="chatbot"], .gradio-container .chatbot {{ flex: 1 !important; min-height: 0 !important; overflow: auto !important; }}
+          .gradio-container {{ width: 100% !important; height: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; border: none !important; font-size: 0.6125rem !important; display: flex !important; flex-direction: column !important; min-height: 0 !important; box-sizing: border-box !important; }}
+          .gradio-container > div, .gradio-container > .contain {{ flex: 1 !important; min-height: 0 !important; display: flex !important; flex-direction: column !important; border: none !important; padding: 0 !important; margin: 0 !important; }}
+          .gradio-container [data-testid="chatbot"], .gradio-container .chatbot {{ flex: 1 !important; min-height: 0 !important; overflow: auto !important; border: none !important; padding: 0 !important; }}
           .gradio-container, .dark .gradio-container {{ background: transparent !important; }}
-          .gradio-container .message, .gradio-container .textbox, .gradio-container button {{ font-size: 0.875rem !important; }}
+          .gradio-container .message, .gradio-container .textbox, .gradio-container button {{ font-size: 0.6125rem !important; }}
           .gradio-container [data-testid="example-button"], .gradio-container .example-btn, .gradio-container [data-testid*="example"] {{ color: {INPUT_TEXT} !important; }}
           .gradio-container textarea, .gradio-container input[type="text"] {{ color: {INPUT_DARK_BLUE} !important; }}
           .gradio-container textarea::placeholder, .gradio-container input::placeholder {{ color: {INPUT_DARK_BLUE} !important; opacity: 0.9; }}
-          footer {{ display: none !important; }}
+          footer, .gradio-logo, [class*="badge"], [class*="logo"], [class*="powered"] {{ display: none !important; }}
         """,
     )
