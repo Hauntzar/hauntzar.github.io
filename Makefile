@@ -1,4 +1,6 @@
-.PHONY: preview-index
+.PHONY: preview preview-index
+
+preview: preview-index
 
 preview-index:
 	@nohup python3 -m http.server 8000 --directory . > /dev/null 2>&1 &
