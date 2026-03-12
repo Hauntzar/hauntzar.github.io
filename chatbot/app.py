@@ -78,6 +78,7 @@ Principal Cloud Software Architect / Fullstack Developer at Nasuni (03/2023 – 
 - Next.js/React, Python/Flask, Python Django (Udemy 2021)
 
 ## Projects
+- Agentic Pantheon: Open source cluster of orchestrators designed for copilot workflows at enterprises
 - Across Time: Cofounder of iOS/Android time capsule messaging app
 - Stock Program: ML-based stock trading system using Robinhood API
 - Mars Nina: Fullstack ecommerce website
